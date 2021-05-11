@@ -5,11 +5,11 @@ from datetime import datetime
 
 
 class ExampleApp(QtWidgets.QMainWindow, clientDiz.Ui_MainWindow):
-    def __init__(self, server_url):
+    def __init__(self):
         super().__init__()
         self.setupUi(self)
 
-        self.server_url = server_url
+    #    self.server_url = server_url
         self.pushButton.pressed.connect(self.send_message)
         self.after = 0
         self.timer = QtCore.QTimer()
@@ -25,7 +25,7 @@ class ExampleApp(QtWidgets.QMainWindow, clientDiz.Ui_MainWindow):
 
     def get_messages(self):
         try:
-            response = requests.get(self.server_url + '/messages', params={'after': self.after})
+            response = requests.get('http://127.0.0.1:5000/messages', params={'after': self.after})
         except:
             return
         messages = response.json()['messages']
@@ -40,7 +40,7 @@ class ExampleApp(QtWidgets.QMainWindow, clientDiz.Ui_MainWindow):
             'text': self.textEdit.toPlainText()
         }
         try:
-            response = requests.post(self.server_url + '/send', json=data)
+            response = requests.post('http://127.0.0.1:5000/send', json=data)
         except:
             self.textBrowser.append('Сервер не доступен')
             self.textBrowser.append('')
@@ -53,6 +53,6 @@ class ExampleApp(QtWidgets.QMainWindow, clientDiz.Ui_MainWindow):
 
 
 app = QtWidgets.QApplication([])
-window1 = ExampleApp(server_url='http://42050a27ba44.ngrok.io')
+window1 = ExampleApp()
 window1.show()
 app.exec()
